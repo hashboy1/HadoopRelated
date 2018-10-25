@@ -6,6 +6,7 @@ import org.apache.hadoop.mapred.MapFileOutputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;;
 
@@ -19,6 +20,7 @@ public class RemoteMapReduceService {
 		//下面为了远程提交添加设置：
 		Configuration conf = job.getConfiguration();
 		conf.set("mapreduce.framework.name", "yarn");
+		conf.set("mapreduce.app-submission.cross-platform","true");
 		//conf.set("hbase.zookeeper.quorum", "MASTER:2181");
 		conf.set("fs.default.name", "hdfs://192.168.0.196:9000");
 		conf.set("yarn.resourcemanager.resource-tracker.address", "192.168.0.196:8031");
@@ -34,14 +36,15 @@ public class RemoteMapReduceService {
 		conf.set("mapreduce.jobhistory.address", "192.168.0.196:10020");
 		conf.set("mapreduce.jobhistory.webapp.address", "192.168.0.196:19888");
 		conf.set("mapred.child.java.opts", "-Xmx1024m");
+		
 	    job.setInputFormatClass(TextInputFormat.class);
-		job.setOutputFormatClass(NullOutputFormat.class);
+		job.setOutputFormatClass(TextOutputFormat.class);
 		
 		FileInputFormat.addInputPath(job, new Path("/obj/obj/1.obj"));
 		FileOutputFormat.setOutputPath(job, new Path("/newobj/output.txt"));
+		job.waitForCompletion(true);
 		
-		
-		job.submit();
+		//job.submit();
 		//提交以后，可以拿到JobID。根据这个JobID可以打开网页查看执行进度。
 		return job.getJobID().toString();
 	}
