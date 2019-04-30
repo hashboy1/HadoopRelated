@@ -25,7 +25,7 @@ public class HbaseTest
     public HbaseTest() throws Exception {
         // 对connection进行初始化、
         // 当然也可以手动加载配置文件，手动加载配置文件时要调用configuration的addResource方法
-        // configuration.addResource("hbase-site.xml");
+        configuration.addResource("hbase-site.xml");
         connection = ConnectionFactory.createConnection(configuration);
     }
     
@@ -78,7 +78,7 @@ public class HbaseTest
     
     public void putData() throws Exception{
         //通过表名获取tbName
-            TableName tbname = TableName.valueOf("bd14:fromJava");
+            TableName tbname = TableName.valueOf("fromJava");
             //通过connection获取相应的表
             Table table =connection.getTable(tbname); 
             //创建Random对象以作为随机参数
@@ -86,7 +86,7 @@ public class HbaseTest
             //hbase支持批量写入数据，创建Put集合来存放批量的数据
             List<Put> batput = new ArrayList<>();
             //循环10次，创建10组测试数据放入list中
-            for(int i=0;i<10;i++){
+            for(int i=0;i<10000;i++){
                 //实例化put对象，传入行键
                 Put put =new Put(Bytes.toBytes("rowkey_"+i));
                 //调用addcolum方法，向i簇中添加字段
@@ -95,6 +95,7 @@ public class HbaseTest
                 put.addColumn(Bytes.toBytes("i"), Bytes.toBytes("birthday"),Bytes.toBytes("2017"+i));
                 put.addColumn(Bytes.toBytes("i"), Bytes.toBytes("phone"),Bytes.toBytes("phone:"+i));
                 put.addColumn(Bytes.toBytes("i"), Bytes.toBytes("邮箱"),Bytes.toBytes("邮箱:"+i));
+                put.addColumn(Bytes.toBytes("i"), Bytes.toBytes("address"),Bytes.toBytes("address:"+i));
                 //将测试数据添加到list中
                 batput.add(put);
             }
@@ -106,7 +107,7 @@ public class HbaseTest
     
     public void getData() throws Exception{
         //获取想要查询的表的TableName
-        TableName tbname = TableName.valueOf("bd14:fromJava");
+        TableName tbname = TableName.valueOf("fromJava");
         //通过tbName获得Table对象
         Table table =connection.getTable(tbname);
         //创建Get的集合以承接查询的条件
@@ -178,8 +179,12 @@ public class HbaseTest
 	public static void main(String[] args) throws Exception {
 		HbaseTest ht=new HbaseTest();
 		//ht.getTables();
-		ht.createTable("table1", "col1","col2");
-	  	ht.putData();
+		//ht.createTable("table1", "col1","col2");
+		//ht.deleteTable("fromJava");
+		//ht.createTable("fromJava","username","age","birthday","phone","邮箱");
+		//ht.createTable("fromJava","i");
+		ht.putData();
+		//ht.getData();
 	}
 	
 

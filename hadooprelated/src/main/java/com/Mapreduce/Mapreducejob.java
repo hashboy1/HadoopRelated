@@ -62,7 +62,7 @@ public class Mapreducejob {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         // "localhost:9000" 需要根据实际情况设置一下
-        conf.set("mapred.job.tracker", "192.168.0.160:9000");
+        conf.set("mapred.job.tracker", "192.168.0.196:9000");
         // 一个hdfs文件系统中的 输入目录 及 输出目录
         String[] ioArgs = new String[] { "hdfs://192.168.0.196:9000/obj/obj", "hdfs://192.168.0.196:9000/output" };
         String[] otherArgs = new GenericOptionsParser(conf, ioArgs).getRemainingArgs();
